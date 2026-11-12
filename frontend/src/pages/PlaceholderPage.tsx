@@ -1,12 +1,11 @@
 import { Button, Container, Typography } from '@mui/material'
-import { Link as RouterLink, useParams } from 'react-router'
+import { Link as RouterLink } from 'react-router'
 
 interface PlaceholderPageProps {
   title: string
 }
 
 function PlaceholderPage({ title }: PlaceholderPageProps) {
-  const { assignmentId } = useParams()
 
   return (
     <Container component="main" maxWidth="lg" sx={{ py: 5 }}>
@@ -15,9 +14,7 @@ function PlaceholderPage({ title }: PlaceholderPageProps) {
       </Typography>
 
       <Typography color="text.secondary" sx={{ mb: 3 }}>
-        {assignmentId
-          ? `Вы открыли задание №${assignmentId}. Экран находится в разработке.`
-          : 'Этот экран находится в разработке.'}
+        Проверьте адрес или вернитесь к списку заданий.
       </Typography>
 
       <Button

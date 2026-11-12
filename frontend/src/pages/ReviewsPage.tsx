@@ -5,11 +5,12 @@ import {
   Typography,
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router'
-import PageFrame from '../components/PageFrame'
-import { assignments } from '../data/assignments'
-import { reviews } from '../data/reviewData'
+import PageFrame from '../shared/ui/PageFrame'
+import { formatDeadline } from '../entities/assignment/assignment'
+import type { Assignment } from '../entities/assignment/assignment'
+import type { DemoReview } from '../entities/review/reviewData'
 
-function ReviewsPage() {
+function ReviewsPage({ assignments, reviews }: { assignments: Assignment[]; reviews: DemoReview[] }) {
   const pendingReviews = reviews.filter((review) => !review.completed)
 
   return (
@@ -42,9 +43,9 @@ function ReviewsPage() {
                 {assignment?.title ?? 'Задание не найдено'}
               </Typography>
 
-              <Typography>
-                Проверить до: {review.deadline}
-              </Typography>
+              {assignment && (
+                <Typography>Проверить до: {formatDeadline(assignment.reviewDeadline)}</Typography>
+              )}
 
               <Button
                 component={RouterLink}

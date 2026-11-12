@@ -1,18 +1,24 @@
 import {
-  Button,
-  MenuItem,
   Paper,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material'
-import { useParams } from 'react-router'
-import PageFrame from '../components/PageFrame'
-import { assignments } from '../data/assignments'
-import { reviews, rubric } from '../data/reviewData'
+import { useNavigate, useParams } from 'react-router'
+import PageFrame from '../shared/ui/PageFrame'
+import { formatDeadline } from '../entities/assignment/assignment'
+import ReviewForm from '../features/submit-review/ReviewForm'
+import type { DemoReview, ReviewFeedback } from '../entities/review/reviewData'
+import type { Assignment } from '../entities/assignment/assignment'
 
-function ReviewPage() {
+interface ReviewPageProps {
+  assignments: Assignment[]
+  reviews: DemoReview[]
+  onSubmit: (id: number, feedback: ReviewFeedback) => boolean
+}
+
+function ReviewPage({ assignments, reviews, onSubmit }: ReviewPageProps) {
   const { reviewId } = useParams()
+  const navigate = useNavigate()
 
   const review = reviews.find(
     (item) => item.id === Number(reviewId) && !item.completed,
@@ -50,9 +56,9 @@ function ReviewPage() {
 
           <Typography>{assignment?.description}</Typography>
 
-          <Typography>
-            Проверить до: {review.deadline}
-          </Typography>
+          {assignment && (
+            <Typography>Проверить до: {formatDeadline(assignment.reviewDeadline)}</Typography>
+          )}
 
           <Typography sx={{ overflowWrap: 'anywhere' }}>
             Вложение: submission-{review.workNumber}.zip
@@ -65,63 +71,14 @@ function ReviewPage() {
         </Stack>
       </Paper>
 
-      <Paper variant="outlined" sx={{ p: 3 }}>
-        <Stack spacing={3}>
-          <Typography component="h2" variant="h6">
-            Отзыв по шаблону
-          </Typography>
-
-          <TextField
-            label="Что получилось хорошо"
-            multiline
-            minRows={3}
-            fullWidth
-          />
-
-          <TextField
-            label="Замечания"
-            multiline
-            minRows={3}
-            fullWidth
-          />
-
-          <TextField
-            label="Рекомендации"
-            multiline
-            minRows={3}
-            fullWidth
-          />
-
-          <Typography component="h2" variant="h6">
-            Оценка по критериям
-          </Typography>
-
-          {rubric.map((criterion) => (
-            <TextField
-              key={criterion}
-              select
-              label={criterion}
-              defaultValue=""
-              fullWidth
-            >
-              {[0, 1, 2, 3, 4, 5].map((score) => (
-                <MenuItem key={score} value={score}>
-                  {score}
-                </MenuItem>
-              ))}
-            </TextField>
-          ))}
-
-          <Typography variant="body2" color="text.secondary">
-            Максимум — 15 баллов. Расчёт суммы, валидация
-            и сохранение будут добавлены на этапе интерактивных форм.
-          </Typography>
-
-          <Button type="button" variant="contained" disabled>
-            Отправить отзыв
-          </Button>
-        </Stack>
-      </Paper>
+      <ReviewForm
+        key={review.id}
+        onSubmit={(feedback) => {
+          const saved = onSubmit(review.id, feedback)
+          if (saved) navigate('/my-reviews', { replace: true })
+          return saved
+        }}
+      />
     </PageFrame>
   )
 }

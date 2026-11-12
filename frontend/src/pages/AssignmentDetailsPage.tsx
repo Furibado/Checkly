@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Button,
   Chip,
   Paper,
@@ -9,12 +11,20 @@ import {
   Typography,
 } from '@mui/material'
 import { Link as RouterLink, useParams } from 'react-router'
-import PageFrame from '../components/PageFrame'
-import { assignments } from '../data/assignments'
-import { rubric } from '../data/reviewData'
+import PageFrame from '../shared/ui/PageFrame'
+import { rubric } from '../entities/review/reviewData'
+import { formatDeadline } from '../entities/assignment/assignment'
+import type { Assignment } from '../entities/assignment/assignment'
+import SubmissionForm from '../features/submit-assignment/SubmissionForm'
 
-function AssignmentDetailsPage() {
+interface AssignmentDetailsPageProps {
+  assignments: Assignment[]
+  onSubmit: (id: number, fileName: string) => boolean
+}
+
+function AssignmentDetailsPage({ assignments, onSubmit }: AssignmentDetailsPageProps) {
   const { assignmentId } = useParams()
+  const [submittedAssignmentId, setSubmittedAssignmentId] = useState<number>()
 
   const assignment = assignments.find(
     (item) => item.id === Number(assignmentId),
@@ -46,16 +56,19 @@ function AssignmentDetailsPage() {
             Описание и требования
           </Typography>
 
-          <Typography>{assignment.description}</Typography>
+          <Typography sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
+            {assignment.description}
+          </Typography>
 
           <Typography>
-            Подготовьте решение по теме задания. Интерфейс должен
-            быть читаемым и корректно отображаться на узком экране.
-            Работу приложите одним архивом.
+            Приложите один файл в формате ZIP или PDF.
           </Typography>
 
           <Typography sx={{ fontWeight: 600 }}>
-            Сдать до: {assignment.deadline}
+            Сдать до: {formatDeadline(assignment.submissionDeadline)}
+          </Typography>
+          <Typography>
+            Проверить до: {formatDeadline(assignment.reviewDeadline)}
           </Typography>
         </Stack>
       </Paper>
@@ -74,7 +87,7 @@ function AssignmentDetailsPage() {
             ))}
 
             <Typography sx={{ fontWeight: 600 }}>
-              Максимум: 15 баллов
+              Максимум: {rubric.length * 5} баллов
             </Typography>
           </Stack>
         </AccordionDetails>
@@ -87,14 +100,19 @@ function AssignmentDetailsPage() {
           </Typography>
 
           <Chip
-            label={assignment.submitted ? 'Сдана' : 'Не сдана'}
-            color={assignment.submitted ? 'success' : 'default'}
+            label={assignment.fileName ? 'Сдана' : 'Не сдана'}
+            color={assignment.fileName ? 'success' : 'default'}
           />
 
-          {assignment.submitted ? (
+          {assignment.fileName ? (
             <>
+              {submittedAssignmentId === assignment.id && (
+                <Alert severity="success" role="status" className="submission-confirmation">
+                  Работа сдана.
+                </Alert>
+              )}
               <Typography sx={{ overflowWrap: 'anywhere' }}>
-                Файл: assignment-{assignment.id}.zip
+                Файл: {assignment.fileName}
               </Typography>
 
               <Button
@@ -106,25 +124,14 @@ function AssignmentDetailsPage() {
               </Button>
             </>
           ) : (
-            <>
-              <Typography component="label" variant="body2">
-                Файл работы
-                <input
-                  type="file"
-                  accept=".zip,.pdf"
-                  style={{ display: 'block', marginTop: 8, maxWidth: '100%' }}
-                />
-              </Typography>
-
-              <Typography variant="body2" color="text.secondary">
-                Выбор файла доступен только для демонстрации.
-                Файл никуда не отправляется.
-              </Typography>
-
-              <Button type="button" variant="contained" disabled>
-                Отправить работу
-              </Button>
-            </>
+            <SubmissionForm
+              key={assignment.id}
+              onSubmit={(fileName) => {
+                const saved = onSubmit(assignment.id, fileName)
+                if (saved) setSubmittedAssignmentId(assignment.id)
+                return saved
+              }}
+            />
           )}
         </Stack>
       </Paper>

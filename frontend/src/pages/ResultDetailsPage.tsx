@@ -1,15 +1,15 @@
 import { Typography } from '@mui/material'
 import { useParams } from 'react-router'
-import PageFrame from '../components/PageFrame'
-import ReviewDetails from '../components/ReviewDetails'
-import { assignments } from '../data/assignments'
-import { receivedReviews } from '../data/reviewData'
+import PageFrame from '../shared/ui/PageFrame'
+import ReviewDetails from '../entities/review/ReviewDetails'
+import type { Assignment } from '../entities/assignment/assignment'
+import { receivedReviews } from '../entities/review/reviewData'
 
-function ResultDetailsPage() {
+function ResultDetailsPage({ assignments }: { assignments: Assignment[] }) {
   const { assignmentId } = useParams()
 
   const assignment = assignments.find(
-    (item) => item.id === Number(assignmentId) && item.submitted,
+    (item) => item.id === Number(assignmentId) && item.fileName !== null,
   )
 
   const feedback = receivedReviews.filter(
@@ -29,7 +29,7 @@ function ResultDetailsPage() {
       ) : (
         <>
           <Typography sx={{ overflowWrap: 'anywhere' }}>
-            Файл: assignment-{assignment.id}.zip
+            Файл: {assignment.fileName}
           </Typography>
 
           {feedback.length === 0 && (

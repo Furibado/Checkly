@@ -5,11 +5,12 @@ import {
   Typography,
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router'
-import PageFrame from '../components/PageFrame'
-import { assignments } from '../data/assignments'
-import { reviews } from '../data/reviewData'
+import PageFrame from '../shared/ui/PageFrame'
+import type { Assignment } from '../entities/assignment/assignment'
+import { rubric } from '../entities/review/reviewData'
+import type { DemoReview } from '../entities/review/reviewData'
 
-function MyReviewsPage() {
+function MyReviewsPage({ assignments, reviews }: { assignments: Assignment[]; reviews: DemoReview[] }) {
   const completedReviews = reviews.filter((review) => review.completed)
 
   return (
@@ -39,11 +40,11 @@ function MyReviewsPage() {
                 Работа №{review.workNumber}
               </Typography>
 
-              <Typography>{assignment?.title}</Typography>
+              <Typography>{assignment?.title ?? 'Задание не найдено'}</Typography>
 
               <Typography>Проверено: {review.reviewedAt}</Typography>
 
-              <Typography>Моя оценка: {total}/15</Typography>
+              <Typography>Моя оценка: {total}/{rubric.length * 5}</Typography>
 
               <Button
                 component={RouterLink}

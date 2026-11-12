@@ -7,7 +7,8 @@ import {
   Typography,
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router'
-import type { Assignment } from '../types/assignment'
+import { formatDeadline } from './assignment'
+import type { Assignment } from './assignment'
 
 interface AssignmentCardProps {
   assignment: Assignment
@@ -33,8 +34,8 @@ function AssignmentCard({ assignment }: AssignmentCardProps) {
         }}
       >
         <Chip
-          label={assignment.submitted ? 'Сдана' : 'Не сдана'}
-          color={assignment.submitted ? 'success' : 'default'}
+          label={assignment.fileName ? 'Сдана' : 'Не сдана'}
+          color={assignment.fileName ? 'success' : 'default'}
           size="small"
           sx={{ mb: 2 }}
         />
@@ -62,7 +63,7 @@ function AssignmentCard({ assignment }: AssignmentCardProps) {
         </Typography>
 
         <Typography variant="body2">
-          Сдать до: {assignment.deadline}
+          Сдать до: {formatDeadline(assignment.submissionDeadline)}
         </Typography>
       </CardContent>
 

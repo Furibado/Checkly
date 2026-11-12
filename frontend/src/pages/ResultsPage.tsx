@@ -5,13 +5,13 @@ import {
   Typography,
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router'
-import PageFrame from '../components/PageFrame'
-import { assignments } from '../data/assignments'
-import { receivedReviews } from '../data/reviewData'
+import PageFrame from '../shared/ui/PageFrame'
+import type { Assignment } from '../entities/assignment/assignment'
+import { receivedReviews } from '../entities/review/reviewData'
 
-function ResultsPage() {
+function ResultsPage({ assignments }: { assignments: Assignment[] }) {
   const submittedAssignments = assignments.filter(
-    (assignment) => assignment.submitted,
+    (assignment) => assignment.fileName !== null,
   )
 
   return (
@@ -37,7 +37,7 @@ function ResultsPage() {
               </Typography>
 
               <Typography sx={{ overflowWrap: 'anywhere' }}>
-                Мой файл: assignment-{assignment.id}.zip
+                Мой файл: {assignment.fileName}
               </Typography>
 
               <Typography>

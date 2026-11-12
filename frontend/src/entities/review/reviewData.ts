@@ -8,7 +8,6 @@ export interface DemoReview {
   id: number
   assignmentId: number
   workNumber: number
-  deadline: string
   completed: boolean
   reviewedAt: string
   strengths: string
@@ -17,12 +16,16 @@ export interface DemoReview {
   scores: number[]
 }
 
+export type ReviewFeedback = Pick<
+  DemoReview,
+  'strengths' | 'remarks' | 'recommendations' | 'scores'
+>
+
 export const reviews: DemoReview[] = [
   {
     id: 101,
     assignmentId: 1,
     workNumber: 104,
-    deadline: '13 ноября, 23:59',
     completed: false,
     reviewedAt: '',
     strengths: '',
@@ -34,7 +37,6 @@ export const reviews: DemoReview[] = [
     id: 102,
     assignmentId: 2,
     workNumber: 108,
-    deadline: '18 ноября, 23:59',
     completed: true,
     reviewedAt: '16 ноября, 18:30',
     strengths: 'Поля формы подписаны, интерфейс понятный.',

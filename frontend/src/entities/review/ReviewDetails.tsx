@@ -4,10 +4,11 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { rubric } from '../data/reviewData'
+import { rubric } from './reviewData'
 
 interface ReviewDetailsProps {
   author: string
+  reviewedAt?: string
   strengths: string
   remarks: string
   recommendations: string
@@ -16,6 +17,7 @@ interface ReviewDetailsProps {
 
 function ReviewDetails({
   author,
+  reviewedAt,
   strengths,
   remarks,
   recommendations,
@@ -30,15 +32,17 @@ function ReviewDetails({
           {author}
         </Typography>
 
-        <Typography>
+        {reviewedAt && <Typography color="text.secondary">Проверено: {reviewedAt}</Typography>}
+
+        <Typography sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
           Что получилось хорошо: {strengths}
         </Typography>
 
-        <Typography>
+        <Typography sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
           Замечания: {remarks}
         </Typography>
 
-        <Typography>
+        <Typography sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
           Рекомендации: {recommendations}
         </Typography>
 
@@ -51,7 +55,7 @@ function ReviewDetails({
         ))}
 
         <Typography sx={{ fontWeight: 700 }}>
-          Итог: {total}/15
+          Итог: {total}/{rubric.length * 5}
         </Typography>
       </Stack>
     </Paper>

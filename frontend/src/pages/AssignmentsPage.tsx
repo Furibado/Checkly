@@ -3,10 +3,11 @@ import {
   Container,
   Typography,
 } from '@mui/material'
-import AssignmentCard from '../components/AssignmentCard'
-import { assignments } from '../data/assignments'
+import AssignmentCard from '../entities/assignment/AssignmentCard'
+import { studentGroup } from '../entities/assignment/assignment'
+import type { Assignment } from '../entities/assignment/assignment'
 
-function AssignmentsPage() {
+function AssignmentsPage({ assignments }: { assignments: Assignment[] }) {
   return (
     <Container
       component="main"
@@ -26,7 +27,7 @@ function AssignmentsPage() {
         </Typography>
 
         <Typography sx={{ color: 'text.secondary' }}>
-          Здесь отображаются задания, которые необходимо выполнить.
+          Группа {studentGroup}
         </Typography>
 
         <Typography

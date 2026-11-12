@@ -1,15 +1,19 @@
 import { Typography } from '@mui/material'
 import { useParams } from 'react-router'
-import PageFrame from '../components/PageFrame'
-import ReviewDetails from '../components/ReviewDetails'
-import { reviews } from '../data/reviewData'
+import PageFrame from '../shared/ui/PageFrame'
+import ReviewDetails from '../entities/review/ReviewDetails'
+import type { Assignment } from '../entities/assignment/assignment'
+import type { DemoReview } from '../entities/review/reviewData'
 
-function MyReviewDetailsPage() {
+function MyReviewDetailsPage(
+  { assignments, reviews }: { assignments: Assignment[]; reviews: DemoReview[] },
+) {
   const { reviewId } = useParams()
 
   const review = reviews.find(
     (item) => item.id === Number(reviewId) && item.completed,
   )
+  const assignment = assignments.find((item) => item.id === review?.assignmentId)
 
   return (
     <PageFrame
@@ -21,6 +25,7 @@ function MyReviewDetailsPage() {
     >
       {review ? (
         <>
+          <Typography>{assignment?.title ?? 'Задание не найдено'}</Typography>
           <Typography>Отправлено: {review.reviewedAt}</Typography>
 
           <ReviewDetails

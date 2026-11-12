@@ -6,7 +6,7 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
-import { Link as RouterLink, NavLink } from 'react-router'
+import { Link as RouterLink, NavLink, useMatch } from 'react-router'
 
 const navigation = [
   { label: 'Задания', path: '/assignments' },
@@ -15,7 +15,16 @@ const navigation = [
   { label: 'Результаты моих работ', path: '/results' },
 ]
 
+const teacherNavigation = [
+  { label: 'Мои задания', path: '/teacher/assignments' },
+  { label: 'Проверенные работы', path: '/teacher/reviews' },
+]
+
 function AppHeader() {
+  const isTeacher = useMatch('/teacher/*') !== null
+  const isHome = useMatch('/') !== null
+  const links = isHome ? [] : isTeacher ? teacherNavigation : navigation
+
   return (
     <AppBar
       position="static"
@@ -35,7 +44,7 @@ function AppHeader() {
         >
           <Typography
             component={RouterLink}
-            to="/assignments"
+            to="/"
             variant="h6"
             sx={{
               color: 'text.primary',
@@ -51,7 +60,7 @@ function AppHeader() {
             aria-label="Основная навигация"
             sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}
           >
-            {navigation.map((item) => (
+            {links.map((item) => (
               <Button
                 key={item.path}
                 component={NavLink}
